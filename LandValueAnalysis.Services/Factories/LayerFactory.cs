@@ -246,7 +246,6 @@ public sealed class LayerFactory : IFactory<DataView, FeatureLayer>
     //Takes a number from 0-1 and plugs it into an oklch gradient for a color that's converted back to rgb
     private Color InterpolateColor(double normalizedValue)
     {
-
         //apply bezier curve-like function to smooth out gradient
         double smoothedValue = ApplyParametricCurve(normalizedValue);
 

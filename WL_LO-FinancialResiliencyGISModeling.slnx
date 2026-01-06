@@ -1,4 +1,7 @@
 <Solution>
+  <Project Path="GetCityRoads/GetCityRoads.pyproj" Type="888888a0-9f3d-457c-b088-3a5042f75d52" Id="56f7d8af-0513-4eba-9fbd-4494631d2213">
+    <Build Project="false" />
+  </Project>
   <Project Path="JoinData/JoinData.pyproj" Type="888888a0-9f3d-457c-b088-3a5042f75d52" Id="442ff13c-c3fd-437c-bb87-94696d931132">
     <Build Project="false" />
   </Project>

@@ -5,12 +5,11 @@ using System.Text;
 
 namespace LandValueScraper.Services;
 
-//Spatially joins building footprint & land value data to calculate building footprints for each lot
 public sealed class DatasetSerializer
 {
     private static readonly string _filePath = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-        "LO_ClackamasData.geojson"
+        "WestLinnLotsData.geojson"
     );
 
     public async Task Serialize(List<Feature> clackamasFeatures)

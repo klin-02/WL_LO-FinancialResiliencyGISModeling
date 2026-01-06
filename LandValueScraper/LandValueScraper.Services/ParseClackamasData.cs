@@ -37,7 +37,10 @@ public sealed class ParseClackamasData
 
         string landUse = ParseOutLandUseString(parsedTaxlotJson);
         double lotSizeInAcres = GetLotSizeInAcres(geometry);
-        double totalValue = ParseOutTotalValue(parsedAssessmentJson);
+        double? totalValue = ParseOutTotalValue(parsedAssessmentJson);
+
+        //more null checks
+        if (totalValue == null || landUse == null) { return null; }
 
         string address = FormatAddress(
             deserializedAddressGeoJsonDTO.properties.number,
@@ -53,7 +56,7 @@ public sealed class ParseClackamasData
                 ["address"] = address,
                 ["land use"] = landUse,
                 ["lot size (acres)"] = Math.Round(lotSizeInAcres, 4).ToString(),
-                ["land value/acre ($)"] = Moneyfy(Math.Round(totalValue / lotSizeInAcres, 3))
+                ["land value/acre ($)"] = Moneyfy(totalValue / lotSizeInAcres)
             }));
     }
 
@@ -74,18 +77,20 @@ public sealed class ParseClackamasData
         return geometry;
     }
 
-    private string ParseOutLandUseString(JObject parsedTaxlotJson)
+    private string? ParseOutLandUseString(JObject parsedTaxlotJson)
     {
         string parsedLandDataString = (string)parsedTaxlotJson.SelectToken("features[0].properties.landclass");
+        if (parsedLandDataString == null) { return null; }
         return _landUseLookups[parsedLandDataString];
     }
 
     //Convert EPSG:2913 projection units (which is in sq ft) to acres
     private double GetLotSizeInAcres(Geometry geometry) => geometry.Area / 43560;
 
-    private double ParseOutTotalValue(JObject parsedAssessmentJson)
+    private double? ParseOutTotalValue(JObject parsedAssessmentJson)
     {
         string parsedLandDataString = (string)parsedAssessmentJson.SelectToken("features[0].properties.market_total_value");
+        if (parsedLandDataString == null) { return null; }
         return double.Parse(parsedLandDataString, NumberStyles.Currency);
     }
 
@@ -98,7 +103,7 @@ public sealed class ParseClackamasData
         return Regex.Replace(partiallyFormattedAddress, @"\s+", " ").Trim(' ');
     }
 
-    private string Moneyfy(double currency)
+    private string Moneyfy(double? currency)
     {
         decimal decimalCurrency = Convert.ToDecimal(currency);
         return decimalCurrency.ToString("C");

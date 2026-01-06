@@ -60,13 +60,14 @@ namespace LandValueAnalysis.Views
             return serviceContainer.BuildServiceProvider();
         }
 
-        private void BuildArcGISRuntimeEnvironment() => ArcGISRuntimeEnvironment.Initialize(c => c
-            .UseApiKey(_configuration.GetConnectionString("ApiKey")
-                ?? throw new InvalidOperationException("Couldn't find api key"))
-            .ConfigureHttp(x => x
-                .UseDefaultReferer(new Uri(_configuration.GetConnectionString("Referer")
-                    ?? throw new InvalidOperationException("Could not find referer!")))
-            ));
+        private void BuildArcGISRuntimeEnvironment() 
+            => ArcGISRuntimeEnvironment.Initialize(c => c
+                .UseApiKey(_configuration.GetConnectionString("ApiKey")
+                    ?? throw new InvalidOperationException("Couldn't find api key"))
+                .ConfigureHttp(x => x
+                    .UseDefaultReferer(new Uri(_configuration.GetConnectionString("Referer")
+                        ?? throw new InvalidOperationException("Could not find referer!")))
+                ));
 
         private void Application_Start(object sender, StartupEventArgs e)
         {

@@ -21,7 +21,7 @@ public sealed class MapViewModel : BaseViewModel
     private BasemapStyle _currentBasemap;
     private bool _isSettingsVisible;
 
-    //properties
+    //properties for combobox so they function correctly
     public DataView[] DataViews { get; } =
     {
         DataView.BuildingFootprint,
