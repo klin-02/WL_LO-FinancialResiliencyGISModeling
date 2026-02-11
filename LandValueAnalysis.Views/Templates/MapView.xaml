@@ -205,14 +205,17 @@
                     <Label
                         Content="Toggle 3D"
                         FontFamily="Sans Serif Collection"
-                        FontSize="12"
-                        HorizontalAlignment="Center"/>
+                        FontSize="16"
+                        Margin="10,0,40,0"
+                        VerticalAlignment="Center"/>
                     <CheckBox
                         Margin="0,0,2,0"
                         HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
                         Checked="On3DEnabled"
                         Unchecked="On3DDisabled"
-                        />
+                        MaxWidth="20"
+                        MaxHeight="20"/>
                 </StackPanel>
                 
             </StackPanel>

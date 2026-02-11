@@ -22,11 +22,14 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="JoinData.py" />
+    <Compile Include="SpeedySpatialProcessors.py" />
+    <Compile Include="Functions_WLZoning.py" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Building_Footprints_-2978958205140820763.zip" />
-    <Content Include="DistrictPolygons.geojson" />
-    <Content Include="WL_ClackamasData.ndgeojson" />
+    <Content Include="WestLinnBoundaries.geojson" />
+    <Content Include="WL_BuildingFootprints%28Fixed%29.geojson" />
+    <Content Include="WL_LotsDatas%28Metric%29.geojson" />
+    <Content Include="Zoning.zip" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in

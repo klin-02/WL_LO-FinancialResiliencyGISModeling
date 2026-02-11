@@ -36,17 +36,15 @@ public sealed class ParseClackamasData
         JObject parsedAssessmentJson = JObject.Parse(assessmentJson); 
 
         string landUse = ParseOutLandUseString(parsedTaxlotJson);
-        double lotSizeInAcres = GetLotSizeInAcres(geometry);
+        double lotSizeInHectares = GetLotSizeInHectares(geometry);
         double? totalValue = ParseOutTotalValue(parsedAssessmentJson);
 
         //more null checks
         if (totalValue == null || landUse == null) { return null; }
 
         string address = FormatAddress(
-            deserializedAddressGeoJsonDTO.properties.number,
-            deserializedAddressGeoJsonDTO.properties.street,
-            city,
-            deserializedAddressGeoJsonDTO.properties.postcode
+            deserializedAddressGeoJsonDTO.properties.SITUS,
+            deserializedAddressGeoJsonDTO.properties.SITUS_CITY
             );
 
         return new Feature(
@@ -55,8 +53,8 @@ public sealed class ParseClackamasData
             {
                 ["address"] = address,
                 ["land use"] = landUse,
-                ["lot size (acres)"] = Math.Round(lotSizeInAcres, 4).ToString(),
-                ["land value/acre ($)"] = Moneyfy(totalValue / lotSizeInAcres)
+                ["lot size (hectare)"] = Math.Round(lotSizeInHectares, 4),
+                ["net present value/hectare ($)"] = Moneyfy(totalValue / lotSizeInHectares)
             }));
     }
 
@@ -84,8 +82,8 @@ public sealed class ParseClackamasData
         return _landUseLookups[parsedLandDataString];
     }
 
-    //Convert EPSG:2913 projection units (which is in sq ft) to acres
-    private double GetLotSizeInAcres(Geometry geometry) => geometry.Area / 43560;
+    //Convert EPSG:2913 projection units (which is in ft) to hectares
+    private double GetLotSizeInHectares(Geometry geometry) => geometry.Area / 107639.1;
 
     private double? ParseOutTotalValue(JObject parsedAssessmentJson)
     {
@@ -94,12 +92,11 @@ public sealed class ParseClackamasData
         return double.Parse(parsedLandDataString, NumberStyles.Currency);
     }
 
-    private string FormatAddress(string number, string street, string city, string postcode)
+    private string FormatAddress(string data, string city)
     {
-        string partiallyFormattedAddress = $"{number} " + 
-            $"{street} " + 
-            $"{city}, OR " + 
-            $"{postcode}";
+        string partiallyFormattedAddress = $"{data} " +
+            $"{city}, OR " +
+            $"97068";
         return Regex.Replace(partiallyFormattedAddress, @"\s+", " ").Trim(' ');
     }
 

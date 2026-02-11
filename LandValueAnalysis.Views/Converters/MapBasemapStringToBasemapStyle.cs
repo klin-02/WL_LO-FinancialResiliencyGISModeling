@@ -11,14 +11,14 @@ public sealed class MapBasemapStringToBasemapStyle : IValueConverter
         ["Satellite"] = BasemapStyle.ArcGISImagery,
         ["Basic Map"] = BasemapStyle.ArcGISLightGray,
         ["Streets"] = BasemapStyle.ArcGISStreets,
-        ["Dark Mode"] = BasemapStyle.ArcGISDarkGray,
+        ["Dark Mode"] = BasemapStyle.ArcGISDarkGrayBase,
     };
     public static readonly Dictionary<BasemapStyle, string> _objectStringRepresentations = new Dictionary<BasemapStyle, string>()
     {
         [BasemapStyle.ArcGISImagery] = "Satellite",
         [BasemapStyle.ArcGISLightGray] = "Basic Map",
         [BasemapStyle.ArcGISStreets] = "Streets",
-        [BasemapStyle.ArcGISDarkGray] = "Dark Mode",
+        [BasemapStyle.ArcGISDarkGrayBase] = "Dark Mode",
     };
 
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture) 

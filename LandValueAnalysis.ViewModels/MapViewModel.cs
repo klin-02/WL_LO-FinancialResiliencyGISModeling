@@ -26,26 +26,22 @@ public sealed class MapViewModel : BaseViewModel
     //properties for combobox so they function correctly
     public DataView[] DataViews { get; } =
     {
-        DataView.BuildingFootprint,
-        DataView.LandValuePerAcre,
-        DataView.NetInfrastructureDeficit,
-        DataView.LandUseClassification,
-        DataView.AverageBuildingFootprint,
-        DataView.AverageLandValuePerAcre,
-        DataView.LotScaleFootprints,
-        DataView.LotScale_LV_PerAcre
+        DataView.Infrastructure,
+        DataView.Zoning,
+        DataView.Footprints,
+        DataView.NetPresentValuePerHectare
     };
 
     public BasemapStyle[] BasemapStyles { get; } =
     {
         BasemapStyle.ArcGISImagery,
-        BasemapStyle.ArcGISLightGray,
         BasemapStyle.ArcGISStreets,
-        BasemapStyle.ArcGISDarkGray
+        BasemapStyle.ArcGISStreets,
+        BasemapStyle.ArcGISDarkGrayBase
     };
 
     public bool IsSettingsVisible
-    {
+    {   
         get => _isSettingsVisible;
         private set
         {
@@ -158,7 +154,7 @@ public sealed class MapViewModel : BaseViewModel
             MapMode.TwoDimensional);
 
         CurrentBasemapStyle = BasemapStyle.ArcGISImagery;
-        CurrentLayer = DataView.LotScale_LV_PerAcre;
+        CurrentLayer = DataView.Footprints;
 
         CurrentViewpoint = new Viewpoint(new MapPoint(-122.636336, 45.367024, SpatialReferences.Wgs84), 10000);
     }

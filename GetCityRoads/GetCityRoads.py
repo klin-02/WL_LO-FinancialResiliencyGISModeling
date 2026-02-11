@@ -10,8 +10,12 @@ from matplotlib import pyplot as plt
 #initialize directory
 dir = Path(__file__).resolve().parent
 
+alternativeLotDataPath = dir / "tax_parcels.zip"
 lotDataPath = dir / "WestLinnLotsData.ndgeojson"
 cityBoundsDataPath = dir / "WestLinnBoundaries.geojson"
+
+#make alternate road dataset (using similar technique but using Clackamas GIS Portal Taxlots datas)
+alternativeTaxLotsDataframe = gp.read_file(alternativeLotDataPath, use_arrow=True)
 
 #read line-delimited geojson into geodataframe
 lotDataList = []
@@ -26,27 +30,23 @@ lotDataFrame = gp.GeoDataFrame.from_features(lotDataList)
 cityBoundsDataFrame = gp.read_file(cityBoundsDataPath, use_arrow=True)
 
 #ensure coordinate system consistency
+alternativeTaxLotsDataframe = alternativeTaxLotsDataframe.to_crs(epsg=2913)
 cityBoundsDataFrame = cityBoundsDataFrame.to_crs(epsg=2913)
 lotDataFrame = lotDataFrame.set_crs(epsg=2913, allow_override=True)
 
 print(cityBoundsDataFrame.crs)
 print(lotDataFrame.crs)
 
-#plot what the map looks like before
-basemap = cityBoundsDataFrame.plot(color="lightblue", edgecolor="black")
-lotDataFrame.boundary.plot(ax=basemap, edgecolor="black")
+#cont. alternative dataset creation
+alternativeTaxLotsDataframe = alternativeTaxLotsDataframe[alternativeTaxLotsDataframe["MAPTAXLOT"].astype(str).str.contains("ROADS")]
+print(alternativeTaxLotsDataframe)
 
-#remove lot polygons from the larger jurisdiction polygon to get the road network
-#anything that isn't a taxlot is most of the time, a road
-#I'll fix the errors with some manual editing in maptiler
-roadNetworkDataFrame = cityBoundsDataFrame.overlay(lotDataFrame, how="difference")
+basemap = alternativeTaxLotsDataframe.plot(color="lightblue", edgecolor="black")
 
-#reproject
-roadNetworkDataFrame = roadNetworkDataFrame.to_crs(epsg=4326)
+alternativeRoadsDataFrame = alternativeTaxLotsDataframe.overlay(cityBoundsDataFrame, how="intersection")
 
-roadNetworkDataFrame.to_file("WestLinnRoadNetwork.geojson", driver="GeoJSON")
+alternativeRoadsDataFrame = alternativeRoadsDataFrame.to_crs(epsg=4326)
+alternativeRoadsDataFrame.to_file("AlternativeWestLinnRoadNetwork.geojson", driver="GeoJSON")
+#end alt dataset creation
 
-#plot after operation
-basemap.clear()
-
-roadNetworkDataFrame.plot(ax=basemap, color="lightblue", edgecolor="black")
+alternativeRoadsDataFrame.plot(ax=basemap, color="lightblue", edgecolor="black")

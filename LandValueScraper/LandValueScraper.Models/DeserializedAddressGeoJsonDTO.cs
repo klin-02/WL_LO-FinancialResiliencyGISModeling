@@ -14,16 +14,11 @@ public record DeserializedAddressGeoJsonDTO(
     Geom geometry
 );
 
+//nullable since not all fields in the geojson have these
 public record Properties(
-    string hash,
-    string number,
-    string street,
-    string unit,
-    string city,
-    string district,
-    string region,
-    string postcode,
-    string id
+    string? SITUS,
+    string? SITUS_CITY,
+    int? SITUS_ZIP //this metric is a little unreliable
     );
 
 public record Geom(

@@ -62,3 +62,4 @@ JoinData/Building_Footprints_-2978958205140820763.zip filter=lfs diff=lfs merge=
 JoinData/DistrictPolygons.geojson filter=lfs diff=lfs merge=lfs -text
 JoinData/WL_ClackamasData.ndgeojson filter=lfs diff=lfs merge=lfs -text
 LandValueAnalysis.Services/Resources/WestLinnLots.gpkg filter=lfs diff=lfs merge=lfs -text
+*.zip filter=lfs diff=lfs merge=lfs -text

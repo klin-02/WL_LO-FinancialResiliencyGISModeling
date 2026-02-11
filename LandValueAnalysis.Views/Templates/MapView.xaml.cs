@@ -109,7 +109,7 @@ public partial class MapView : UserControl
         _mapViewModel.UpdateSettingsVisibility();
     }
 
-    private async void On3DEnabled(object sender, EventArgs e)
+        private async void On3DEnabled(object sender, EventArgs e)
     {
         try
         {

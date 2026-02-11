@@ -7,11 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Resources\WestLinnLots.gpkg" />
+    <None Remove="Resources\WestLinnLandValueDatas.gpkg" />
+    <None Remove="Resources\WL_InfrastructureData.gpkg" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Resources\WestLinnLots.gpkg">
+    <Content Include="Resources\WestLinnLandValueDatas.gpkg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\WL_InfrastructureData.gpkg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

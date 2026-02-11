@@ -2,12 +2,14 @@
 using Esri.ArcGISRuntime.Mapping;
 using Esri.ArcGISRuntime.Mapping.Popups;
 using Esri.ArcGISRuntime.Symbology;
+using LandValueAnalysis.Models.Shared;
 using System.Collections.Concurrent;
 using System.Data;
 using System.Drawing;
 using System.Globalization;
+using System.Reflection.Emit;
+using System.Text.RegularExpressions;
 using Wacton.Unicolour;
-using LandValueAnalysis.Models.Shared;
 
 namespace LandValueAnalysis.Services.Factories;
 
@@ -22,15 +24,14 @@ public sealed class LayerFactory
     );
 
     //Data paths
-    private static readonly string _lotData = Path.Combine(Directory.GetCurrentDirectory(), 
-        "Resources\\WestLinnLots.gpkg");
-    private static readonly string _censusBlockData = Path.Combine(Directory.GetCurrentDirectory(), 
-        "Resources\\CensusBlockData.gpkg");
-    private static readonly string _neighborhoodPolygonsData = Path.Combine(Directory.GetCurrentDirectory(), 
-        "Resources\\NeighborhoodPolygonsData.gpkg");
+    private static readonly string _lotData = Path.Combine(Directory.GetCurrentDirectory(),
+        "Resources\\WestLinnLandValueDatas.gpkg");
+    private static readonly string _infrastructureData = Path.Combine(Directory.GetCurrentDirectory(),
+        "Resources\\WL_InfrastructureData.gpkg");
 
     //fields for popups
     //Takes in FieldName (the field to render on), label (alias of the field); rest is self-explanatory
+    //Add a bit of formatting for fields that have their formatting a little messed up
     private static readonly PopupField[] _lotsFields =
     {
         new PopupField()
@@ -51,27 +52,71 @@ public sealed class LayerFactory
         },
         new PopupField()
         {
-            FieldName = "lot size (acres)",
-            Label = "Lot Size (acres)",
+            FieldName = "lot size (hectare)",
+            Label = "Lot Size (hectare)",
             IsVisible = true,
             IsEditable = false,
             StringFieldOption = PopupStringFieldOption.SingleLine
         },
         new PopupField()
         {
-            FieldName = "land value/acre ($)",
-            Label = "Land Value/acre ($)",
+            FieldName = "net present value/hectare ($)",
+            Label = "Net Present Value/hectare ($)",
+            IsVisible = true,
+            IsEditable = false,
+            StringFieldOption = PopupStringFieldOption.SingleLine,
+            Format = new PopupFieldFormat() { UseThousandsSeparator = true, DecimalPlaces = 2 }
+        },
+        new PopupField()
+        {
+            FieldName = "ZONE",
+            Label = "Zoning",
+            IsVisible = true,
+            IsEditable = false,
+            StringFieldOption = PopupStringFieldOption.SingleLine
+        },
+        new PopupField()
+        {
+            FieldName = "zoning liberties index",
+            Label = "Zoning Liberties Index (1-10)",
             IsVisible = true,
             IsEditable = false,
             StringFieldOption = PopupStringFieldOption.SingleLine
         },
     };
+    private static readonly PopupField[] _infrastructureFields =
+    {
+        new PopupField()
+        {
+            FieldName = "census lot building footprint",
+            Label = "Building Coverage",
+            IsVisible = true,
+            IsEditable = false,
+            StringFieldOption = PopupStringFieldOption.SingleLine
+        },
+        new PopupField()
+        {
+            FieldName = "infrastructure cost adjusted for footprint ($)",
+            Label = "Infrastructure Cost (Adj. for Building Footprint) ($)",
+            IsVisible = true,
+            IsEditable = false,
+            StringFieldOption = PopupStringFieldOption.SingleLine,
+            Format = new PopupFieldFormat() { UseThousandsSeparator = true, DecimalPlaces = 2 }
+        },
+        new PopupField()
+        {
+            FieldName = "POP20",
+            Label = "Population (2020)",
+            IsVisible = true,
+            IsEditable = false,
+            StringFieldOption = PopupStringFieldOption.SingleLine
+        }
+    };
 
     //Popup title definition field
     //Wrap title field in curly braces to indicate it's a field-derived title
     private const string _lotsPopupTitle = "{address}";
-    private const string _censusBlockTitle = "{blockID}";
-    private const string _neighborhoodPolygonsTitle = "{neighborhood_name}";
+    private const string _infrastructurePopupTitle = "Details";
 
     //Oklch triplets for diverging color gradient
     private static readonly OklchColor _color1Oklch = new OklchColor //light yellow
@@ -105,37 +150,27 @@ public sealed class LayerFactory
     }
 
     private void LoadDefaultLayers()
-    { /*
+    {
         _defaultLayers.TryAdd(
-            DataView.LandValuePerAcre,
+            Models.Shared.DataView.Infrastructure,
             new Lazy<Task<FeatureLayer>>(() => 
-                CreateLayerAsync(_censusBlockData, "land value/acre ($)")
+                CreateLayerAsync(_infrastructureData, 0, 3000000, _infrastructureFields, _infrastructurePopupTitle, "infrastructure cost adjusted for footprint ($)", "[infrastructure cost adjusted for footprint ($)] / 320000")
             ));
         _defaultLayers.TryAdd(
-            DataView.BuildingFootprint,
+            Models.Shared.DataView.Zoning,
             new Lazy<Task<FeatureLayer>>(() =>
-                CreateLayerAsync(_censusBlockData, "building footprint")
+                CreateLayerAsync(_lotData, 0, 10, _lotsFields, _lotsPopupTitle, "zoning liberties index", "[zoning liberties index] * 50")
             ));
         _defaultLayers.TryAdd(
-            DataView.NetInfrastructureDeficit,
-            new Lazy<Task<FeatureLayer>>(() => 
-                CreateLayerAsync(_neighborhoodPolygonsData, "net neighborhood infrastructure deficit ($)")
-            )); */
-        _defaultLayers.TryAdd(
-            Models.Shared.DataView.LotScaleFootprints,
+            Models.Shared.DataView.Footprints,
             new Lazy<Task<FeatureLayer>>(() =>
-                CreateLayerAsync(_lotData, 0, 1, _lotsFields, _lotsPopupTitle, "building footprint", "[building footprint] * 2000")
+                CreateLayerAsync(_lotData, 0, 1, _lotsFields, _lotsPopupTitle, "building footprint", "[building footprint] * 500")
             ));
         _defaultLayers.TryAdd(
-            Models.Shared.DataView.LotScale_LV_PerAcre,
+            Models.Shared.DataView.NetPresentValuePerHectare,
             new Lazy<Task<FeatureLayer>>(() =>
-                CreateLayerAsync(_lotData, 0, 20000000, _lotsFields, _lotsPopupTitle, "land value/acre ($)", "[land value/acre ($)] / 10000")
-            )); /*
-        _defaultLayers.TryAdd(
-            DataView.Neighborhoods,
-            new Lazy<Task<FeatureLayer>>(() =>
-                CreateLayerAsync(_neighborhoodPolygonsData)
-            )); */
+                CreateLayerAsync(_lotData, 0, 40000000, _lotsFields, _lotsPopupTitle, "net present value/hectare ($)", "[net present value/hectare ($)] / 120000")
+            ));
     }
 
     //Takes in data source path, min max data bounds for rendering gradient, popup fields, popup title field, and field to render on
@@ -198,14 +233,7 @@ public sealed class LayerFactory
     {
         if (value == null) { return 0; }
 
-        bool isValid = double.TryParse(
-            value.ToString(),
-            NumberStyles.AllowCurrencySymbol | NumberStyles.Currency,
-            CultureInfo.CurrentCulture,
-            out double numericValue
-            );
-
-        return isValid ? numericValue : 0;
+        return double.TryParse(value.ToString(), out var result) == true ? result : 0;
     }
 
     private async Task<FeatureTable> LoadGeoPackageTable(string path)

@@ -9,25 +9,17 @@ public sealed class MapStringNameToMapEnum : IValueConverter
 {
     public static readonly Dictionary<string, DataView> _stringEnumRepresentations = new Dictionary<string, DataView>()
     {
-        ["Building Footprint"] = DataView.BuildingFootprint,
-        ["Land Value Per Acre ($)"] = DataView.LandValuePerAcre,
-        ["Net Infrastrure Deficit ($)"] = DataView.NetInfrastructureDeficit,
-        ["Normalized Land Use Classification"] = DataView.LandUseClassification,
-        ["Average Building Footprint"] = DataView.AverageBuildingFootprint,
-        ["Average Land Value Per Acre ($)"] = DataView.AverageLandValuePerAcre,
-        ["Lots - Building Footprint"] = DataView.LotScaleFootprints,
-        ["Lots - Land Value Per Acre ($)"] = DataView.LotScale_LV_PerAcre
+        ["Infrastructure Cost (Adj. for Building Footprint) ($)"] = DataView.Infrastructure,
+        ["Zoning"] = DataView.Zoning,
+        ["Building Footprints"] = DataView.Footprints,
+        ["Net Present Value per Hectare ($)"] = DataView.NetPresentValuePerHectare
     };
     public static readonly Dictionary<DataView, string> _enumStringRepresentations = new Dictionary<DataView, string>()
     {
-        [DataView.BuildingFootprint] = "Building Footprint",
-        [DataView.LandValuePerAcre] = "Land Value Per Acre ($)",
-        [DataView.NetInfrastructureDeficit] = "Net Infrastrure Deficit ($)",
-        [DataView.LandUseClassification] = "Normalized Land Use Classification",
-        [DataView.AverageBuildingFootprint] = "Average Building Footprint",
-        [DataView.AverageLandValuePerAcre] = "Average Land Value Per Acre ($)",
-        [DataView.LotScaleFootprints] = "Lots - Building Footprint",
-        [DataView.LotScale_LV_PerAcre] = "Lots - Land Value Per Acre ($)"
+        [DataView.Infrastructure] = "Infrastructure Cost (Adj. for Building Footprint) ($)",
+        [DataView.Zoning] = "Zoning",
+        [DataView.Footprints] = "Building Footprints",
+        [DataView.NetPresentValuePerHectare] = "Net Present Value per Hectare ($)"
     };
 
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture) 

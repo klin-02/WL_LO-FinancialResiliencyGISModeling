@@ -48,6 +48,9 @@ public sealed class Scrape : BackgroundService
 
         List<Feature> clackamasFeatures = await GetClackamasObjects(addressDTOs);
         await _datasetSerializer.Serialize(clackamasFeatures);
+
+        //stop application
+        await base.StopAsync(stopToken);
     }
 
     private async Task<List<Feature>> GetClackamasObjects(List<DeserializedAddressGeoJsonDTO> addressDTOs)
