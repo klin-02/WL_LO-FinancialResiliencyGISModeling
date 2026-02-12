@@ -8,6 +8,7 @@
         xmlns:converters="clr-namespace:LandValueAnalysis.Views.Converters"
         xmlns:viewModels="clr-namespace:LandValueAnalysis.ViewModels;assembly=LandValueAnalysis.ViewModels"
         d:DataContext="{d:DesignInstance Type=viewModels:MapViewModel}"
+        KeyDown="KeyPressed"
         Loaded="OnLoaded"
         mc:Ignorable="d"
         d:DesignHeight="768" d:DesignWidth="1024">

@@ -17,19 +17,10 @@ boundariesFrame = boundariesFrame[["geometry"]]
 #only get address datas within west linn
 joinedData =  taxParcelFrame.sjoin(boundariesFrame, predicate="intersects")
 
-#get rid of roads
-joinedData = joinedData[~joinedData["MAPTAXLOT"].str.contains("ROADS")]
-
 joinedData = joinedData[["geometry", "SITUS", "SITUS_CITY", "SITUS_ZIP"]]
-
-#get rid of no situs entries
-joinedData = joinedData[joinedData["SITUS"] != "NO SITUS"]
 
 #get center points
 joinedData = joinedData.set_geometry(joinedData.centroid)
 
 joinedData = joinedData.to_crs(epsg=4326)
 joinedData.to_file("WestLinnAddresses.geojson", driver="GeoJSON")
-
-print(joinedData)
-

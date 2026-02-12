@@ -23,6 +23,8 @@ using Esri.ArcGISRuntime.Toolkit.UI.Controls;
 using System.Windows.Media.Animation;
 using LandValueAnalysis.Services.Factories;
 using LandValueAnalysis.Models.Shared;
+using Esri.ArcGISRuntime.Symbology;
+using System.Runtime.CompilerServices;
 
 namespace LandValueAnalysis.Views.Templates;
 
@@ -30,6 +32,9 @@ namespace LandValueAnalysis.Views.Templates;
 //A little messy since ArcGIS sdk's architecture isn't very decoupled
 public partial class MapView : UserControl
 {
+    //keybpard inputs for tilting in 3D
+    private static readonly Dictionary<Key, Action> _keyboardInputs = new Dictionary<Key, Action>();
+
     //backing fields
     private readonly PopupViewer _featurePopupViewer;
 
@@ -38,6 +43,7 @@ public partial class MapView : UserControl
     public MapView()
     {
         InitializeComponent();
+        LoadKeybinds();
 
         _featurePopupViewer = new PopupViewer();
     }
@@ -47,6 +53,29 @@ public partial class MapView : UserControl
     {
         _mapViewModel = this.DataContext as MapViewModel
             ?? throw new Exception("Data Context doesn't exist");
+    }
+ 
+    private void KeyPressed(object sender, KeyEventArgs e)
+    {
+        if (_keyboardInputs.ContainsKey(e.Key))
+        {
+            _keyboardInputs[e.Key].Invoke();
+
+            e.Handled = true;
+        }
+    }
+
+    private void LoadKeybinds()
+    {
+        _keyboardInputs.Add(
+            Key.W,
+            () => Rotate(amount: 2)
+            );
+        _keyboardInputs.Add(
+            Key.S,
+            () => Rotate(amount: -2)
+            );
+
     }
 
     //When map is clicked a popup, if exists, will show
@@ -139,5 +168,22 @@ public partial class MapView : UserControl
         Viewpoint currentViewpoint = map.GetCurrentViewpoint(ViewpointType.CenterAndScale);
 
         _mapViewModel.CurrentViewpoint = currentViewpoint;
+    }
+
+    //Should be in viewmodel but ArcGIS's architecture design is not good
+    //implementation of rotation - insert negative to rotate down, positive to rotate up
+    private void Rotate(double amount)
+    {
+        if (_mapViewModel.IsThreeDimensional)
+        {
+            Camera camera = MySceneView.Camera;
+
+            camera.RotateTo(
+                camera.Heading,
+                Math.Clamp(camera.Pitch + amount, 0, 180),
+                camera.Roll
+                );
+            MySceneView.SetViewpointCamera(camera);
+        }
     }
 }

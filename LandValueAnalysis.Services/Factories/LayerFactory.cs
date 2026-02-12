@@ -65,7 +65,7 @@ public sealed class LayerFactory
             IsVisible = true,
             IsEditable = false,
             StringFieldOption = PopupStringFieldOption.SingleLine,
-            Format = new PopupFieldFormat() { UseThousandsSeparator = true, DecimalPlaces = 2 }
+            Format = new PopupFieldFormat() { UseThousandsSeparator = true }
         },
         new PopupField()
         {
@@ -92,7 +92,8 @@ public sealed class LayerFactory
             Label = "Building Coverage",
             IsVisible = true,
             IsEditable = false,
-            StringFieldOption = PopupStringFieldOption.SingleLine
+            StringFieldOption = PopupStringFieldOption.SingleLine,
+            Format = new PopupFieldFormat() { DecimalPlaces = 2 }
         },
         new PopupField()
         {
@@ -154,7 +155,7 @@ public sealed class LayerFactory
         _defaultLayers.TryAdd(
             Models.Shared.DataView.Infrastructure,
             new Lazy<Task<FeatureLayer>>(() => 
-                CreateLayerAsync(_infrastructureData, 0, 3000000, _infrastructureFields, _infrastructurePopupTitle, "infrastructure cost adjusted for footprint ($)", "[infrastructure cost adjusted for footprint ($)] / 320000")
+                CreateLayerAsync(_infrastructureData, 0, 3000000, _infrastructureFields, _infrastructurePopupTitle, "infrastructure cost adjusted for footprint ($)", "[infrastructure cost adjusted for footprint ($)] / 250000")
             ));
         _defaultLayers.TryAdd(
             Models.Shared.DataView.Zoning,
@@ -169,7 +170,7 @@ public sealed class LayerFactory
         _defaultLayers.TryAdd(
             Models.Shared.DataView.NetPresentValuePerHectare,
             new Lazy<Task<FeatureLayer>>(() =>
-                CreateLayerAsync(_lotData, 0, 40000000, _lotsFields, _lotsPopupTitle, "net present value/hectare ($)", "[net present value/hectare ($)] / 120000")
+                CreateLayerAsync(_lotData, 0, 70000000, _lotsFields, _lotsPopupTitle, "net present value/hectare ($)", "[net present value/hectare ($)] / 140000")
             ));
     }
 

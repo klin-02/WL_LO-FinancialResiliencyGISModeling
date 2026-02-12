@@ -18,8 +18,10 @@ public sealed class MapFactory
     {
         LoadDefaultMaps();
 
-        //Set default (starting off with 2D map)
-        _defaultViewpoint = new Viewpoint(new MapPoint(-122.636336, 45.367024, SpatialReferences.Wgs84), 10000);
+        //Set default viewpoints for both 2D and 3D (program starts in 2D)
+        _defaultViewpoint = new Viewpoint(
+            new MapPoint(-122.636336, 45.367024, SpatialReferences.Wgs84), 
+            10000);
     }
 
     public MapStatus Build(MapMode mapMode, Viewpoint? existingViewpoint = null)
