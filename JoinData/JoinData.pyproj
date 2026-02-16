@@ -21,14 +21,17 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="CalculateBuildingFootprint.py" />
+    <Compile Include="ConfigureZoning.py" />
+    <Compile Include="FixTaxlots.py" />
+    <Compile Include="GeomHelpers.py" />
     <Compile Include="JoinData.py" />
-    <Compile Include="SpeedySpatialProcessors.py" />
-    <Compile Include="Functions_WLZoning.py" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="LotsData%28initial%29.geojson" />
     <Content Include="WestLinnBoundaries.geojson" />
+    <Content Include="WestLinnLots%28Fixed%29.geojson" />
     <Content Include="WL_BuildingFootprints%28Fixed%29.geojson" />
-    <Content Include="WL_LotsDatas%28Metric%29.geojson" />
     <Content Include="Zoning.zip" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />

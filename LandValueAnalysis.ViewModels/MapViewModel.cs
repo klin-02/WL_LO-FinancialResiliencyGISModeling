@@ -132,8 +132,8 @@ public sealed class MapViewModel : BaseViewModel
         {
             FeatureLayer newLayer = await _layerFactory.BuildAsync(CurrentLayer);
 
-            CurrentMapStatus.CurrentMap.OperationalLayers.Clear();
             await newLayer.LoadAsync();
+            CurrentMapStatus.CurrentMap.OperationalLayers.Clear();
             CurrentMapStatus.CurrentMap.OperationalLayers.Add(newLayer);
         }
         catch (Exception ex)

@@ -67,13 +67,15 @@ public partial class MapView : UserControl
 
     private void LoadKeybinds()
     {
+        //rotate forward
         _keyboardInputs.Add(
             Key.W,
-            () => Rotate(amount: 2)
+            () => Rotate(amount: -2)
             );
+        //rotate back
         _keyboardInputs.Add(
             Key.S,
-            () => Rotate(amount: -2)
+            () => Rotate(amount: 2)
             );
 
     }

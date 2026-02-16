@@ -43,9 +43,9 @@ public sealed class ParseClackamasData
         if (totalValue == null || landUse == null) { return null; }
 
         string address = FormatAddress(
-            deserializedAddressGeoJsonDTO.properties.SITUS,
-            deserializedAddressGeoJsonDTO.properties.SITUS_CITY
-            );
+            deserializedAddressGeoJsonDTO.properties.SITEADDR,
+            deserializedAddressGeoJsonDTO.properties.SITECITY,
+            deserializedAddressGeoJsonDTO.properties.SITEZIP);
 
         return new Feature(
             geometry,
@@ -92,11 +92,11 @@ public sealed class ParseClackamasData
         return double.Parse(parsedLandDataString, NumberStyles.Currency);
     }
 
-    private string FormatAddress(string data, string city)
+    private string FormatAddress(string data, string city, int? zip)
     {
         string partiallyFormattedAddress = $"{data} " +
             $"{city}, OR " +
-            $"97068";
+            $"{zip}";
         return Regex.Replace(partiallyFormattedAddress, @"\s+", " ").Trim(' ');
     }
 

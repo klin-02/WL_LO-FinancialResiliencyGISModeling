@@ -63,7 +63,6 @@ roadsDataFrame['geometry'] = roadsDataFrame['geometry'].apply(lambda geom : shap
 get rid of repeat polygons by consilidating everything into a larger polygon
 also helps make the spatial join a little less painful
 '''
-#since union all returns shapely geometries, put it back into a geodataframe
 roadsDataFrame = roadsDataFrame.dissolve()
 utilitiesDataFrame = utilitiesDataFrame.dissolve()
 

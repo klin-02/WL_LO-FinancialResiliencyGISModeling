@@ -63,3 +63,4 @@ JoinData/DistrictPolygons.geojson filter=lfs diff=lfs merge=lfs -text
 JoinData/WL_ClackamasData.ndgeojson filter=lfs diff=lfs merge=lfs -text
 LandValueAnalysis.Services/Resources/WestLinnLots.gpkg filter=lfs diff=lfs merge=lfs -text
 *.zip filter=lfs diff=lfs merge=lfs -text
+Taxlots_(Public).geojson filter=lfs diff=lfs merge=lfs -text

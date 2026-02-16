@@ -1,3 +1,8 @@
+{
+"type": "FeatureCollection",
+"name": "WestLinnAddresses",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
 { "type": "Feature", "properties": { "SITEADDR": "1109 WILLAMETTE FALLS DR", "SITECITY": "WEST LINN", "SITEZIP": "97068" }, "geometry": { "type": "Point", "coordinates": [ -122.666805901987587, 45.343903837641719 ] } },
 { "type": "Feature", "properties": { "SITEADDR": "19464 VIEW DR", "SITECITY": "WEST LINN", "SITEZIP": "97068" }, "geometry": { "type": "Point", "coordinates": [ -122.645447427085614, 45.389226614061762 ] } },
 { "type": "Feature", "properties": { "SITEADDR": "22595 PONDERAY DR", "SITECITY": "WEST LINN", "SITEZIP": "97068" }, "geometry": { "type": "Point", "coordinates": [ -122.64407889807562, 45.360283704933593 ] } },
@@ -10680,3 +10685,5 @@
 { "type": "Feature", "properties": { "SITEADDR": " ", "SITECITY": "WEST LINN", "SITEZIP": "97068" }, "geometry": { "type": "Point", "coordinates": [ -122.612810507723438, 45.365360345230052 ] } },
 { "type": "Feature", "properties": { "SITEADDR": " ", "SITECITY": "WEST LINN", "SITEZIP": "97068" }, "geometry": { "type": "Point", "coordinates": [ -122.620379050219839, 45.356717715365825 ] } },
 { "type": "Feature", "properties": { "SITEADDR": " ", "SITECITY": "WEST LINN", "SITEZIP": "97068" }, "geometry": { "type": "Point", "coordinates": [ -122.65141201792045, 45.34418782704671 ] } }
+]
+}

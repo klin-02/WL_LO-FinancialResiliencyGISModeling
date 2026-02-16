@@ -9,10 +9,14 @@
 
   <ItemGroup>
     <None Remove="Addresses.json" />
+    <None Remove="Resources\WestLinnAddresses.ndgeojson" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="Resources\TestData.ndgeojson">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\WestLinnAddresses.ndgeojson">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

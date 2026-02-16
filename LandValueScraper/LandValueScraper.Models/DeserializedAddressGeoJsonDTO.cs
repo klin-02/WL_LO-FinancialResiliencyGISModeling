@@ -16,9 +16,9 @@ public record DeserializedAddressGeoJsonDTO(
 
 //nullable since not all fields in the geojson have these
 public record Properties(
-    string? SITUS,
-    string? SITUS_CITY,
-    int? SITUS_ZIP //this metric is a little unreliable
+    string? SITEADDR,
+    string? SITECITY,
+    int? SITEZIP
     );
 
 public record Geom(

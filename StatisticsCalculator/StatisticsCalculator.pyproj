@@ -2,15 +2,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>4e90e1dd-5292-4155-961a-cf4f74b8b39d</ProjectGuid>
+    <ProjectGuid>eaa707c1-b822-42d9-be3f-29e496b91d3c</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>WebScrapingPrep.py</StartupFile>
+    <StartupFile>Main.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
-    <Name>WebScrapingPrep</Name>
-    <RootNamespace>WebScrapingPrep</RootNamespace>
+    <Name>StatisticsCalculator</Name>
+    <RootNamespace>StatisticsCalculator</RootNamespace>
+    <IsWindowsApplication>False</IsWindowsApplication>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,11 +22,14 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="WebScrapingPrep.py" />
+    <Compile Include="Main.py" />
+    <Compile Include="RDDHelpers.py" />
+    <Compile Include="StatsService.py" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Taxlots_%28Public%29.geojson" />
-    <Content Include="WestLinnBoundaries.geojson" />
+    <Content Include="WestLinnDatas.geojson" />
+    <Content Include="WL_InfrastructureData.geojson" />
+    <Content Include="Zoning.zip" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
