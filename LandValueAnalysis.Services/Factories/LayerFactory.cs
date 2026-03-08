@@ -40,7 +40,8 @@ public sealed class LayerFactory
             Label = "Building Footprint",
             IsVisible = true,
             IsEditable = false,
-            StringFieldOption = PopupStringFieldOption.SingleLine
+            StringFieldOption = PopupStringFieldOption.SingleLine,
+            Format = new PopupFieldFormat() { UseThousandsSeparator = true, DecimalPlaces = 3 }
         },
         new PopupField()
         {
@@ -56,7 +57,8 @@ public sealed class LayerFactory
             Label = "Lot Size (hectare)",
             IsVisible = true,
             IsEditable = false,
-            StringFieldOption = PopupStringFieldOption.SingleLine
+            StringFieldOption = PopupStringFieldOption.SingleLine,
+            Format = new PopupFieldFormat() { UseThousandsSeparator = true, DecimalPlaces = 3 }
         },
         new PopupField()
         {
@@ -65,7 +67,7 @@ public sealed class LayerFactory
             IsVisible = true,
             IsEditable = false,
             StringFieldOption = PopupStringFieldOption.SingleLine,
-            Format = new PopupFieldFormat() { UseThousandsSeparator = true }
+            Format = new PopupFieldFormat() { UseThousandsSeparator = true, DecimalPlaces = 2 }
         },
         new PopupField()
         {
@@ -97,21 +99,30 @@ public sealed class LayerFactory
         },
         new PopupField()
         {
-            FieldName = "infrastructure cost adjusted for footprint ($)",
-            Label = "Infrastructure Cost (Adj. for Building Footprint) ($)",
-            IsVisible = true,
-            IsEditable = false,
-            StringFieldOption = PopupStringFieldOption.SingleLine,
-            Format = new PopupFieldFormat() { UseThousandsSeparator = true, DecimalPlaces = 2 }
-        },
-        new PopupField()
-        {
             FieldName = "POP20",
             Label = "Population (2020)",
             IsVisible = true,
             IsEditable = false,
             StringFieldOption = PopupStringFieldOption.SingleLine
-        }
+        },
+        new PopupField()
+        {
+            FieldName = "census lot net present value/hectare ($)",
+            Label = "Net Present Value/Hectare ($)",
+            IsVisible = true,
+            IsEditable = false,
+            StringFieldOption = PopupStringFieldOption.SingleLine,
+            Format = new PopupFieldFormat() { UseThousandsSeparator=true, DecimalPlaces = 2 }
+        },
+        new PopupField()
+        {
+            FieldName = "infrastructure cost/building area ($)",
+            Label = "Infrastructure Cost/Building Area ($)",
+            IsVisible = true,
+            IsEditable = false,
+            StringFieldOption = PopupStringFieldOption.SingleLine,
+            Format = new PopupFieldFormat() { UseThousandsSeparator = true, DecimalPlaces = 2 }
+        },
     };
 
     //Popup title definition field
@@ -155,7 +166,7 @@ public sealed class LayerFactory
         _defaultLayers.TryAdd(
             Models.Shared.DataView.Infrastructure,
             new Lazy<Task<FeatureLayer>>(() => 
-                CreateLayerAsync(_infrastructureData, 0, 3000000, _infrastructureFields, _infrastructurePopupTitle, "infrastructure cost adjusted for footprint ($)", "[infrastructure cost adjusted for footprint ($)] / 250000")
+                CreateLayerAsync(_infrastructureData, 0, 3000000, _infrastructureFields, _infrastructurePopupTitle, "infrastructure cost/building area ($)", "[infrastructure cost/building area ($)] / 5000")
             ));
         _defaultLayers.TryAdd(
             Models.Shared.DataView.Zoning,
@@ -165,12 +176,12 @@ public sealed class LayerFactory
         _defaultLayers.TryAdd(
             Models.Shared.DataView.Footprints,
             new Lazy<Task<FeatureLayer>>(() =>
-                CreateLayerAsync(_lotData, 0, 1, _lotsFields, _lotsPopupTitle, "building footprint", "[building footprint] * 500")
+                CreateLayerAsync(_lotData, 0, 1, _lotsFields, _lotsPopupTitle, "building footprint", "[building footprint] * 1000")
             ));
         _defaultLayers.TryAdd(
             Models.Shared.DataView.NetPresentValuePerHectare,
             new Lazy<Task<FeatureLayer>>(() =>
-                CreateLayerAsync(_lotData, 0, 70000000, _lotsFields, _lotsPopupTitle, "net present value/hectare ($)", "[net present value/hectare ($)] / 140000")
+                CreateLayerAsync(_lotData, 0, 40000000, _lotsFields, _lotsPopupTitle, "net present value/hectare ($)", "[net present value/hectare ($)] / 70000")
             ));
     }
 

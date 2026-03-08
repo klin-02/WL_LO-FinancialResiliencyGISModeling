@@ -34,9 +34,9 @@ public sealed class MapViewModel : BaseViewModel
 
     public BasemapStyle[] BasemapStyles { get; } =
     {
-        BasemapStyle.ArcGISImagery,
-        BasemapStyle.ArcGISStreets,
-        BasemapStyle.ArcGISStreets,
+        BasemapStyle.ArcGISImageryStandard,
+        BasemapStyle.ArcGISLightGrayBase,
+        BasemapStyle.ArcGISTerrainBase,
         BasemapStyle.ArcGISDarkGrayBase
     };
 
@@ -153,7 +153,7 @@ public sealed class MapViewModel : BaseViewModel
         CurrentMapStatus = _mapFactory.Build(
             MapMode.TwoDimensional);
 
-        CurrentBasemapStyle = BasemapStyle.ArcGISImagery;
+        CurrentBasemapStyle = BasemapStyle.ArcGISImageryStandard;
         CurrentLayer = DataView.Footprints;
 
         CurrentViewpoint = new Viewpoint(new MapPoint(-122.636336, 45.367024, SpatialReferences.Wgs84), 10000);

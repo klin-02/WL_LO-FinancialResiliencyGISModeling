@@ -1,8 +1,7 @@
-from tokenize import Ignore
-from turtle import distance
 import pandas as pd
 import numpy as np
 import statsmodels.formula.api as smf
+from statsmodels.regression.linear_model import RegressionResults, RegressionResultsWrapper
 import statsmodels.stats.weightstats as ws
 import matplotlib.pyplot as plt
 from math import e
@@ -22,14 +21,12 @@ def RunGeoRDD(data, distanceColName, yName, geoRDDGraphTitle):
     #it means no confounding variables! we're effectively just comparing zoning and our y variable
     data = data[(np.abs(data[distanceColName]) <= 0.22)]
     weights = __ExponentialKernelEstimation(data[distanceColName], -2.5, 1)
-    plt.plot(data[distanceColName], weights)
-    plt.show()
 
     #split dataset and weights into treatment (high density zoning) and control (low density zoning)
-    treatmentFrame = data[(data[distanceColName] < 0)]
-    controlFrame = data[((data[distanceColName]) > 0)]
-    treatmentWeights = weights[data[distanceColName] < 0]
-    controlWeights = weights[data[distanceColName] > 0]
+    treatmentFrame = data[(data[distanceColName] > 0)]
+    controlFrame = data[((data[distanceColName]) < 0)]
+    treatmentWeights = weights[data[distanceColName] > 0]
+    controlWeights = weights[data[distanceColName] < 0]
 
     #get rid of outliers
     treatmentFrame = __EliminateOutliers(treatmentFrame, yName, treatmentWeights)
@@ -49,7 +46,7 @@ def RunGeoRDD(data, distanceColName, yName, geoRDDGraphTitle):
     #two regressions will then be run, and via .summary, I can identify the RDD relationship
     #put the variables in quotes too to account for special characters
     result = smf.wls(formula=f"Q('{yName}')~Q('{distanceColName}')*threshold", data=data, weights=weights).fit()
-    print(result.summary().tables[1])
+    print(result.summary())
 
     #create new column for the regression y values so it can be plotted
     data["model prediction"] = result.fittedvalues
@@ -62,7 +59,7 @@ def RunGeoRDD(data, distanceColName, yName, geoRDDGraphTitle):
     plt.title(geoRDDGraphTitle)
     plt.show()
 
-    print("hi")
+    input("Press enter to continue: ")
 
 '''
 some data points can be unusually high

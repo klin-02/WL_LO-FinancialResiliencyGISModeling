@@ -22,7 +22,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CalculateInfrastructureCosts.py" />
-    <Compile Include="InfrastructureMaths.py" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="CensusBlocksOregon.zip" />

@@ -1,12 +1,15 @@
 import geopandas as gp
 from pathlib import Path
+import matplotlib.pyplot
 import pandas as pd
 import shapely
 import matplotlib
-
-import InfrastructureMaths as imath
-
 matplotlib.use("qt5agg",force=True)
+
+'''
+Not a lot of good project structure, sorry!
+I mean it's just a data processing script I did in 3 hours haha
+'''
 
 #initialize directory
 dir = Path(__file__).resolve().parent
@@ -37,7 +40,7 @@ utilitiesDataFrame = gp.GeoDataFrame(pd.concat([gp.read_file(path, use_arrow=Tru
     for path in utilitiesDataList], ignore_index=True), crs=4326)
 
 #get rid of unneeded columns
-oregonCensusBlocksDataFrame = oregonCensusBlocksDataFrame[["geometry", "POP20"]]
+oregonCensusBlocksDataFrame = oregonCensusBlocksDataFrame[["geometry", "POP20", "OBJECTID_1"]]
 cityBoundsDataFrame = cityBoundsDataFrame[["geometry"]]
 roadsDataFrame = roadsDataFrame[["geometry"]]
 utilitiesDataFrame = utilitiesDataFrame[["geometry"]]
@@ -52,7 +55,9 @@ utilitiesDataFrame = utilitiesDataFrame.to_crs(epsg=2913)
 #get census blocks datas for only West Linn
 westLinnCensusBlocksDataFrame = oregonCensusBlocksDataFrame.sjoin(cityBoundsDataFrame)
 
-westLinnCensusBlocksDataFrame = westLinnCensusBlocksDataFrame[["geometry", "POP20"]]
+westLinnCensusBlocksDataFrame = westLinnCensusBlocksDataFrame[["geometry", "POP20", "OBJECTID_1"]]
+
+print(westLinnCensusBlocksDataFrame.shape[0])
 
 #fix invalid geometries
 roadsDataFrame['geometry'] = roadsDataFrame['geometry'].apply(lambda geom : geom if geom.is_valid else geom.buffer(0))
@@ -68,6 +73,9 @@ utilitiesDataFrame = utilitiesDataFrame.dissolve()
 
 print(roadsDataFrame.shape[0])
 print(utilitiesDataFrame.shape[0])
+
+roadsDataFrame.plot(color="gray")
+utilitiesDataFrame.plot(color="lightblue")
 
 #calculate costs per sq m for roads metrics (epsg 2913 is in sq ft so there needs a conversion)
 roadsArea = roadsDataFrame.geometry.area
@@ -85,43 +93,51 @@ print(infrastructureCostPerSqMeter)
 print(utilityCostPerKm)
 
 '''
-firstly, get building footprint coverages of census blocks to derive maintenance costs
-more building means more usage
-then spatial join of census blocks, roads, and utilities to find intersection area + construction costs
+Find census block net present value/acre and building footprint
+This is for statistical analysis and reference
 '''
+#lots centroids make this a bit easier - get rid of duplicate overlap issues
+lotsDataFrame = lotsDataFrame.set_geometry(lotsDataFrame.geometry.centroid)
+
 joinedData = westLinnCensusBlocksDataFrame.sjoin(lotsDataFrame)
+joinedData = joinedData.set_crs(epsg=2913)
 joinedData["census lot building footprint"] = joinedData.apply(lambda row :
     (lotsDataFrame.iloc[row["index_right"]]["lot size (hectare)"]
     * lotsDataFrame.iloc[row["index_right"]]["building footprint"])
     / (row.geometry.area * 0.00000929) #hectare conversion really quick
     , axis=1
     )
+joinedData["census lot total value"] = joinedData.apply(lambda row :
+    lotsDataFrame.iloc[row["index_right"]]["net present value/hectare ($)"]
+    * lotsDataFrame.iloc[row["index_right"]]["lot size (hectare)"]
+    , axis=1
+    )
 joinedData = joinedData.drop(["index_right"], axis=1)
 
-#since sometimes lots are intersected by multiple census blocks and lot so fix
-joinedData = joinedData.sort_values("census lot building footprint", ascending=False) \
-    .drop_duplicates("address", keep="first")
-
 #drop unneeded columns to make the aggregate function work
-joined = joinedData[["census lot building footprint", "geometry"]]
+joined = joinedData[["census lot building footprint", "census lot total value", "geometry", "POP20", "OBJECTID_1"]]
 
 #then aggregate
 aggregateFunctions = { 
     'census lot building footprint': 'sum',
+    'census lot total value': 'sum',
     'geometry': 'first',
-    'POP20': 'first'
+    'POP20': 'first',
+    'OBJECTID_1': 'first'
     }
 
-joinedData = joinedData.groupby("geometry", as_index=False).agg(aggregateFunctions)
+joinedData = joinedData.groupby("OBJECTID_1", as_index=False).agg(aggregateFunctions)
 
 #put back into geodataframe
 joinedData = gp.GeoDataFrame(joinedData, geometry="geometry")
 
-joinedData.plot(color="lightblue", edgecolor="black")
+#finish census lot net present value per acre calculation
+#don't forget ft to hectare conversion :D
+joinedData["census lot net present value/hectare ($)"] = joinedData["census lot total value"] / (joinedData.geometry.area * 0.00000929)
 
-joinedData["exponential adjusting coefficient"] = imath.ExponentialDecayMaintenanceAdjuster(
-    joinedData["census lot building footprint"]
-    )
+joinedData = joinedData.drop(["OBJECTID_1", "census lot total value"], axis=1)
+
+joinedData.plot(color="lightblue", edgecolor="black")
 
 #join with road data
 joinedData = joinedData.sjoin(roadsDataFrame)
@@ -130,7 +146,6 @@ joinedData = joinedData.sjoin(roadsDataFrame)
 joinedData["road costs"] = joinedData.apply(lambda row :
     row.geometry.intersection(roadsDataFrame.geometry.iloc[0]).area * 0.09290304 #convert to sq m really quick
     * infrastructureCostPerSqMeter
-    * row["exponential adjusting coefficient"]
     , axis=1
     )
 
@@ -144,15 +159,13 @@ joinedData["utility costs"] = joinedData.apply(lambda row :
     row.geometry.intersection(utilitiesDataFrame.geometry.iloc[0]).length
     * 0.0003048 #convert to km really quick
     * utilityCostPerKm
-    * row["exponential adjusting coefficient"]
     , axis=1
     )
 
-#adj infrastructure cost by building footprint since census blocks aren't consistent in size
-#it is buildings that pay for infrastructure
-joinedData["infrastructure cost adjusted for footprint ($)"] = (joinedData["utility costs"] + joinedData["road costs"]) / joinedData["census lot building footprint"]
+#adjust by built out area
+joinedData["infrastructure cost/building area ($)"] = (joinedData["utility costs"] + joinedData["road costs"]) / (joinedData.geometry.area * 0.00000929 * joinedData["census lot building footprint"])
 
-joinedData = joinedData.drop(["index_right", "exponential adjusting coefficient", "utility costs", "road costs"], axis=1)
+joinedData = joinedData.drop(["index_right", "utility costs", "road costs"], axis=1)
 
 joinedData = joinedData.set_crs(epsg=2913, allow_override=True)
 joinedData = joinedData.to_crs(epsg=4326)

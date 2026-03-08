@@ -8,16 +8,16 @@ public sealed class MapBasemapStringToBasemapStyle : IValueConverter
 {
     public static readonly Dictionary<string, BasemapStyle> _stringObjectRepresentations = new Dictionary<string, BasemapStyle>()
     {
-        ["Satellite"] = BasemapStyle.ArcGISImagery,
-        ["Basic Map"] = BasemapStyle.ArcGISLightGray,
-        ["Streets"] = BasemapStyle.ArcGISStreets,
+        ["Satellite"] = BasemapStyle.ArcGISImageryStandard,
+        ["Basic Map"] = BasemapStyle.ArcGISLightGrayBase,
+        ["Terrain"] = BasemapStyle.ArcGISTerrainBase,
         ["Dark Mode"] = BasemapStyle.ArcGISDarkGrayBase,
     };
     public static readonly Dictionary<BasemapStyle, string> _objectStringRepresentations = new Dictionary<BasemapStyle, string>()
     {
-        [BasemapStyle.ArcGISImagery] = "Satellite",
-        [BasemapStyle.ArcGISLightGray] = "Basic Map",
-        [BasemapStyle.ArcGISStreets] = "Streets",
+        [BasemapStyle.ArcGISImageryStandard] = "Satellite",
+        [BasemapStyle.ArcGISLightGrayBase] = "Basic Map",
+        [BasemapStyle.ArcGISTerrainBase] = "Terrain",
         [BasemapStyle.ArcGISDarkGrayBase] = "Dark Mode",
     };
 

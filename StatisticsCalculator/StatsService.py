@@ -2,6 +2,37 @@ import pandas as pd
 import geopandas as gp
 import matplotlib.pyplot as plt
 from numpy import float64
+from math import log
+
+'''
+Look at the distributions of zoning
+'''
+def CreateLotsZoningHistogram(lotsFrame):
+    lotsFrame["ZONE"].value_counts().plot.bar(title="Properties per Zone")
+    plt.show()
+
+'''
+Infrastructure data seems to follow a logarithmic/exponential pattern
+Therefore, I'll run a regression for this and see
+
+def ExpRegressInfrastructureAnalysis(infrastructureData):
+    import ExpRegressionHelpers as er
+    df = gp.GeoDataFrame(infrastructureData)
+
+    #linearlize the y value with log(y)
+    df["linearlized infrastructure cost"] = df.apply(lambda row : 
+        log(row["infrastructure cost adjusted for footprint ($)"])
+        , axis=1
+        )
+
+    df.plot(x="census lot building footprint", y="infrastructure cost adjusted for footprint ($)", kind="scatter")
+    plt.show()
+
+    er.RunExpRegress(df, "census lot building footprint", 
+        "infrastructure cost adjusted for footprint ($)", 
+        "linearlized infrastructure cost", 
+        "Block Building Footprint (%) and Weighted Infrastructure Cost ($)")
+'''
 
 '''
 Evaluate causative effects between zoning and municipal finance
@@ -23,6 +54,9 @@ def GeoRDDAnalysis(df1, zoningData):
     laxerLots = lotsCentroids[lotsCentroids["zoning liberties index"] > 5]
     stricterLots = lotsCentroids[lotsCentroids["zoning liberties index"] < 5]
 
+    print(laxerLots.shape[0])
+    print(df1.shape[0])
+
     #get geodataframes with only geometries to make the sjoin less painful
     laxGeometries = laxerLots[["geometry"]]
     strictGeometries = stricterLots[["geometry"]]
@@ -40,10 +74,11 @@ def GeoRDDAnalysis(df1, zoningData):
 
     #calc distance between low density properties and high density zoning (convert ft to kilometers too because metric)
     #multiply values by -1 to make GeoRDD easier (because two lines on the same graph are nice bc high density can just go on the left & low density on the right)
-    laxerLots["dist. to notable zoning border (km)"] = laxerLots.distance(stricterZoningFrame) * -0.0003048
+    laxerLots["dist. to notable zoning border (km)"] = laxerLots.distance(stricterZoningFrame) * 0.0003048
 
     #calc distance of high density properties to low density zoning (ft to kilometers conversions here too)
-    stricterLots["dist. to notable zoning border (km)"] = stricterLots.distance(laxerZoningFrame) * 0.0003048
+    #multiply values by -1 to make GeoRDD easier (because two lines on the same graph are nice bc high density can just go on the right & low density on the left)
+    stricterLots["dist. to notable zoning border (km)"] = stricterLots.distance(laxerZoningFrame) * -0.0003048
     
     #concat datas together
     #conveniently turns it into a pandas df for GeoRDD analysis. sweet!
@@ -54,10 +89,3 @@ def GeoRDDAnalysis(df1, zoningData):
     #run :D
     rdd.RunGeoRDD(processedLotsFrame, "dist. to notable zoning border (km)", "net present value/hectare ($)", "Zoning and Net Present Value/Hectare (GeoRDD)")
     rdd.RunGeoRDD(processedLotsFrame, "dist. to notable zoning border (km)", "building footprint", "Zoning and Building Footprint (GeoRDD)")
-    
-'''
-Look at the distributions of zoning
-'''
-def CreateLotsZoningHistogram(lotsFrame):
-    lotsFrame["ZONE"].value_counts().plot.bar(title="Properties per Zone")
-    plt.show()

@@ -22,13 +22,13 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="ExpRegressionHelpers.py" />
     <Compile Include="Main.py" />
     <Compile Include="RDDHelpers.py" />
     <Compile Include="StatsService.py" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="WestLinnDatas.geojson" />
-    <Content Include="WL_InfrastructureData.geojson" />
     <Content Include="Zoning.zip" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
