@@ -3,6 +3,7 @@ import geopandas as gp
 import matplotlib.pyplot as plt
 from numpy import float64
 from math import log
+from decimal import Decimal
 
 '''
 Look at the distributions of zoning
@@ -89,3 +90,18 @@ def GeoRDDAnalysis(df1, zoningData):
     #run :D
     rdd.RunGeoRDD(processedLotsFrame, "dist. to notable zoning border (km)", "net present value/hectare ($)", "Zoning and Net Present Value/Hectare (GeoRDD)")
     rdd.RunGeoRDD(processedLotsFrame, "dist. to notable zoning border (km)", "building footprint", "Zoning and Building Footprint (GeoRDD)")
+
+def RandomForestAnalysis(df1):
+    import RandomForestHelpers as rfh
+
+    df1 = pd.DataFrame(df1)
+
+    #remove 0
+    df1 = df1[df1["net present value/hectare ($)"] > 0]
+
+    #log transform to eliminate heteroscedasticity, which is natural in an econometric study like this
+    df1["net present value/hectare ($)"] = df1.apply(lambda row :
+        log(row["net present value/hectare ($)"], 10)
+        , axis=1)
+
+    rfh.RunRandomForestAnalysis(df1, "building footprint", "net present value/hectare ($)", "Predicted Impact of Densification on Wealth Creation")

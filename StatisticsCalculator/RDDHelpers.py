@@ -48,6 +48,9 @@ def RunGeoRDD(data, distanceColName, yName, geoRDDGraphTitle):
     result = smf.wls(formula=f"Q('{yName}')~Q('{distanceColName}')*threshold", data=data, weights=weights).fit()
     print(result.summary())
 
+    #print p values with better decimal precision
+    print(result.pvalues)
+
     #create new column for the regression y values so it can be plotted
     data["model prediction"] = result.fittedvalues
 
@@ -55,7 +58,7 @@ def RunGeoRDD(data, distanceColName, yName, geoRDDGraphTitle):
 
     #plot
     basemap = data.plot(x=distanceColName, y=yName, kind="scatter")
-    data.plot(x=distanceColName, y="model prediction", ax=basemap, color="red")
+    data.plot(x=distanceColName, y="model prediction", ax=basemap, color="red", linewidth=6)
     plt.title(geoRDDGraphTitle)
     plt.show()
 

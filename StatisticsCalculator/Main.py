@@ -18,8 +18,9 @@ def main():
     zoningFrame = zoningFrame.to_crs(epsg=2913)
 
     #analyze!
-    ss.CreateLotsZoningHistogram(lotsFrame)
-    ss.GeoRDDAnalysis(lotsFrame, zoningFrame)
+    #ss.CreateLotsZoningHistogram(lotsFrame)
+    #ss.GeoRDDAnalysis(lotsFrame, zoningFrame)
+    ss.RandomForestAnalysis(lotsFrame)
 
 if __name__ == "__main__":
     matplotlib.use("qt5agg",force=True)
