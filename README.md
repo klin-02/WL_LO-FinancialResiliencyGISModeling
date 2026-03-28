@@ -1,4 +1,2 @@
-## TODO
-<p>Add SceneView rendering to create extrusion-choropleth 3d visualizations of the data</p>
-<p>Quantify infrastructure costs per property</p>
-<p>(After all this) utilize causation model + regression to statistically analyze data</p>
+<img width="1596" height="1198" alt="image" src="https://github.com/user-attachments/assets/0e00bdeb-cce5-4b81-b560-9ae287e7577c" />
+
