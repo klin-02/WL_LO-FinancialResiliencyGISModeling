@@ -1,3 +1,4 @@
+from multiprocessing import process
 import pandas as pd
 import geopandas as gp
 import matplotlib.pyplot as plt
@@ -85,6 +86,9 @@ def GeoRDDAnalysis(df1, zoningData):
     #conveniently turns it into a pandas df for GeoRDD analysis. sweet!
     processedLotsFrame = pd.concat([laxerLots, stricterLots], ignore_index=True)
     
+    #set back to lots instead of centroid geometry (I want to make a choropleth later)
+    processedLotsFrame = gp.GeoDataFrame(processedLotsFrame, geometry=df1["geometry"])
+    
     processedLotsFrame["net present value/hectare ($)"] = processedLotsFrame["net present value/hectare ($)"].astype(float64)
 
     #run :D
@@ -99,9 +103,12 @@ def RandomForestAnalysis(df1):
     #remove 0
     df1 = df1[df1["net present value/hectare ($)"] > 0]
 
+    #pre-log transform graph
+    df1.plot("building footprint", "net present value/hectare ($)", kind="scatter")
+
     #log transform to eliminate heteroscedasticity, which is natural in an econometric study like this
     df1["net present value/hectare ($)"] = df1.apply(lambda row :
-        log(row["net present value/hectare ($)"], 10)
+        log(row["net present value/hectare ($)"])
         , axis=1)
 
-    rfh.RunRandomForestAnalysis(df1, "building footprint", "net present value/hectare ($)", "Predicted Impact of Densification on Wealth Creation")
+    rfh.DevelopRandomForestModel(df1, "building footprint", "net present value/hectare ($)", "Predicted Impact of Densification on Wealth Creation")

@@ -1,4 +1,7 @@
 <Solution>
+  <Project Path="AStatisticsCalculator/AStatisticsCalculator.pyproj" Type="888888a0-9f3d-457c-b088-3a5042f75d52" Id="eaa707c1-b822-42d9-be3f-29e496b91d3c">
+    <Build Project="false" />
+  </Project>
   <Project Path="CalculateInfrastructureCosts/CalculateInfrastructureCosts.pyproj" Type="888888a0-9f3d-457c-b088-3a5042f75d52" Id="10e39b7a-9a96-4e89-82ef-0e4f7cce9de8">
     <Build Project="false" />
   </Project>
@@ -14,7 +17,7 @@
   <Project Path="LandValueAnalysis.ViewModels/LandValueAnalysis.ViewModels.csproj" />
   <Project Path="LandValueAnalysis.Views/LandValueAnalysis.Views.csproj" />
   <Project Path="LandValueScraper/LandValueScraper.csproj" />
-  <Project Path="StatisticsCalculator/StatisticsCalculator.pyproj" Type="888888a0-9f3d-457c-b088-3a5042f75d52" Id="eaa707c1-b822-42d9-be3f-29e496b91d3c">
+  <Project Path="QuickGIS3DImageVisualizer/QuickGIS3DImageVisualizer.pyproj" Type="888888a0-9f3d-457c-b088-3a5042f75d52" Id="178b6498-c782-41bf-b894-207afeedf122">
     <Build Project="false" />
   </Project>
   <Project Path="WebScrapingPrep/WebScrapingPrep.pyproj" Type="888888a0-9f3d-457c-b088-3a5042f75d52" Id="4e90e1dd-5292-4155-961a-cf4f74b8b39d">

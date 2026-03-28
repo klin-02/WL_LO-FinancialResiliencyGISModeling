@@ -4,11 +4,11 @@ import matplotlib.pyplot
 import pandas as pd
 import shapely
 import matplotlib
+from matplotlib import pyplot as plt
 matplotlib.use("qt5agg",force=True)
 
 '''
-Not a lot of good project structure, sorry!
-I mean it's just a data processing script I did in 3 hours haha
+Data processing script I did in 3 hours lmao
 '''
 
 #initialize directory
@@ -75,7 +75,10 @@ print(roadsDataFrame.shape[0])
 print(utilitiesDataFrame.shape[0])
 
 roadsDataFrame.plot(color="gray")
-utilitiesDataFrame.plot(color="lightblue")
+plt.show()
+
+cityBoundsDataFrame.plot(color="lightblue")
+plt.show()
 
 #calculate costs per sq m for roads metrics (epsg 2913 is in sq ft so there needs a conversion)
 roadsArea = roadsDataFrame.geometry.area

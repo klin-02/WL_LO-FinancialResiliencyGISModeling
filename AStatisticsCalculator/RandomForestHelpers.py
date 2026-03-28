@@ -1,10 +1,10 @@
 import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
-from sklearn.metrics import classification_report, mean_squared_error, r2_score, root_mean_squared_error
+from sklearn.model_selection import GridSearchCV
+from sklearn.metrics import mean_squared_error, r2_score, root_mean_squared_error
 from sklearn.model_selection import train_test_split
 from sklearn.tree import plot_tree
-from math import sqrt
+from math import sqrt, e
 import matplotlib.pyplot as plt
 
 '''
@@ -12,7 +12,7 @@ Random Forest Analysis to predict the amount of density needed to pay off school
 Also helps capture non-linear trends within density vs. wealth creation
 No outlier removal necessary because random forest is able to isolate them from partitioning and local model fitting 
 '''
-def RunRandomForestAnalysis(data, xLabel, yLabel, graphTitle):
+def DevelopRandomForestModel(data, xLabel, yLabel, graphTitle):
     data = pd.DataFrame(data)
     xLabel = str(xLabel)
     yLabel = str(yLabel)
@@ -39,8 +39,8 @@ def RunRandomForestAnalysis(data, xLabel, yLabel, graphTitle):
     yPrediction = model.predict(xTest)
 
     #descriptive statistics evaluation
-    meanSquaredError = mean_squared_error(yTest, yPrediction) #average of the differences of y prediction and y actual
-    rootMeanSquaredError = root_mean_squared_error(yTest, yPrediction) #average error in terms of how much it is off
+    meanSquaredError = mean_squared_error(yTest, yPrediction)
+    rootMeanSquaredError = root_mean_squared_error(yTest, yPrediction) #average error in terms of how much it is off in percent (bc log transform)
     rSquared = r2_score(yTest, yPrediction) #amount of variance explained by the model
 
     print(meanSquaredError)
@@ -55,12 +55,25 @@ def RunRandomForestAnalysis(data, xLabel, yLabel, graphTitle):
     #make x values in order so I don't get a crap ton of lines
     data = data.sort_values(xLabel)
 
-    basemap = data.plot(x=xLabel, y=yLabel, kind="scatter", color="blue")
+    basemap = data.plot(x=xLabel, y=yLabel, kind="scatter")
     data.plot(x=xLabel, y="model prediction", ax=basemap, kind="line", color="green", linewidth=6)
+    plt.ylabel(f"log({yLabel})")
     plt.title(graphTitle)
     plt.show()
 
-    plot_tree(model.best_estimator_.estimators_[0], filled=True, max_depth=3)
+    plot_tree(model.best_estimator_.estimators_[0], filled=True)
     plt.show()
 
-    input("Press Enter to Continue...")
+    __PredictHypotheticals(model)
+
+
+def __PredictHypotheticals(model):
+    #print density predictions
+    df = [[0.03], [0.191], [0.5]]
+    df = pd.DataFrame(data=df, columns=["building footprint"])
+    df["prediction"] = model.predict(df)
+
+    for row, col in df.iterrows():
+        print(row["building footprint"])
+        print(row["prediction"])
+    

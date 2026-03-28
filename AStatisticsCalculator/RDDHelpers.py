@@ -5,6 +5,7 @@ from statsmodels.regression.linear_model import RegressionResults, RegressionRes
 import statsmodels.stats.weightstats as ws
 import matplotlib.pyplot as plt
 from math import e
+import geopandas as gp
 
 '''
 Takes in the data, the name of the distance column, and the y variable name
@@ -40,6 +41,9 @@ def RunGeoRDD(data, distanceColName, yName, geoRDDGraphTitle):
 
     #redo weights after outliers cleared to steady the index
     weights = __ExponentialKernelEstimation(data[distanceColName], -2.5, 1)
+
+    #for poster figure
+    __PlotChoropleth(data, distanceColName)
 
     #run GeoRDD via weighted least squares using my exponential kernel model
     #take in two x variables via the patsy syntax of *
@@ -98,3 +102,11 @@ Experiment! <|:)
 '''
 def __ExponentialKernelEstimation(distanceDataListInKm, stretchingFactor, yMax) -> np.float64:
     return yMax * e ** (stretchingFactor * np.abs(distanceDataListInKm))
+
+'''
+Plotting for figure on poster haha
+'''
+def __PlotChoropleth(data, distanceColName):
+    data = gp.GeoDataFrame(data, geometry="geometry")
+    ax = data.plot(column=distanceColName, cmap="Blues", missing_kwds={"color": "lightgrey"})
+    plt.show()
